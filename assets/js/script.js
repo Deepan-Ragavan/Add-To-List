@@ -57,8 +57,3 @@ inputEl.addEventListener('keypress', (event) => {
     }
 })
 
-let reset = document.getElementById("reset")
-reset.addEventListener("click",(event1)=>{
-    card.reset()
-})
-
