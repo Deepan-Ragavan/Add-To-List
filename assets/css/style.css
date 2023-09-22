@@ -19,11 +19,9 @@ header {
     box-shadow: 5px 5px 10px #00000079;
 }
 
-.main {
-    margin-top: 100px;
-}
 
 .mainContainer {
+    margin: 100px auto;
     background-color: #0e0d26;
     color: #fff;
     width: max-content;
@@ -49,21 +47,20 @@ input {
     background-color: rgb(240, 240, 240);
 }
 
-.innerContainer {
+.card {
     margin: 10px 0px;
     text-align: center;
-}
-
-.innerContainer .card {
     padding: 10px;
 }
 
-.innerContainer .btn {
-    margin-top: 10px;
-    font-weight: 500;
+.card button {
+    background: transparent;
+    border: none;
+    color: rgb(101, 101, 101);
 }
 
-.list-container>li {
+.list-container>div {
+    list-style: none;
     display: flex;
     justify-content: space-between;
     padding: 7px 15px;
@@ -72,11 +69,5 @@ input {
     border-radius: 5px;
     background-color: rgb(240, 240, 240);
     text-transform: capitalize;
-    color: rgb(101, 101, 101);
-}
-
-.card button {
-    background: transparent;
-    border: none;
     color: rgb(101, 101, 101);
 }
