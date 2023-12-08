@@ -1,19 +1,33 @@
 let card = document.getElementById("card")
-
-//Badge
-let i = 0
-let badge = document.getElementById("badge")
-badge.textContent = i
-
-if (badge.textContent == 0) {
-    badge.textContent = ""
-    card.style.display = "none"
-}
-
 let inputEl = document.getElementById("textInput");
-let textOutput = document.getElementById("listOutput")
+let listContainer = document.getElementById("listOutput")
+let badge = document.getElementById("badge")
+card.hidden = true
 
-addList = () => {
+
+document.addEventListener('DOMContentLoaded', () => {
+    //fetch Local Storage
+    const taskStorage = [...JSON.parse(localStorage.getItem('tasks'))]
+
+    taskStorage.forEach(key => {
+
+        var list = document.createElement("div")
+        listContainer.appendChild(list)
+        let listItem = document.createElement("li")
+        list.append(listItem)
+        listItem.textContent = key.task
+
+        let btnDiv = document.createElement("div")
+        list.append(btnDiv)
+        let closeBtn = document.createElement("button")
+        closeBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>'
+        btnDiv.append(closeBtn)
+    })
+
+    refreshUI()
+})
+
+let addList = () => {
 
     let pattern = /^[\w]/g;
     if (pattern.test(inputEl.value) != true) {
@@ -21,10 +35,8 @@ addList = () => {
         return false
     }
 
-    card.style.display = "block"
-
     let list = document.createElement("div")
-    textOutput.appendChild(list)
+    listContainer.appendChild(list)
     let listItem = document.createElement("li")
     list.append(listItem)
     listItem.textContent = inputEl.value
@@ -35,21 +47,38 @@ addList = () => {
     closeBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>'
     btnDiv.append(closeBtn)
 
-    badge.textContent = ++i
+    // local storage
+
+    localStorage.setItem('tasks',
+        JSON.stringify([
+            ...JSON.parse(localStorage.getItem('tasks') || '[]'),
+            { task: inputEl.value }
+        ])
+    )
+
     inputEl.value = ""
 
 
-//Remove Item
-    closeBtn.addEventListener('click', removeItem = (e) => {
-        let existingList = e.target.parentNode.parentNode.parentNode
-        existingList.remove()
+    //Remove Item
+    closeBtn.addEventListener('click', removeTask)
 
-        badge.textContent = --i
-        if (badge.textContent == 0) {
-            badge.textContent = ""
-            card.style.display = "none"
+    refreshUI()
+}
+
+function removeTask(e) {
+    let existingList = e.target.parentNode.parentNode.parentNode
+    existingList.remove()
+
+    let taskStorage = [...JSON.parse(localStorage.getItem('tasks'))]
+    taskStorage.forEach(key => {
+        if (key.task === existingList.innerText) {
+            taskStorage.splice(taskStorage.indexOf(key), 1)
         }
     })
+
+    localStorage.setItem('tasks', JSON.stringify(taskStorage))
+
+    refreshUI()
 }
 
 
@@ -60,3 +89,10 @@ inputEl.addEventListener('keypress', (event) => {
     }
 })
 
+//refresh ui
+function refreshUI() {
+    badge.innerText = listContainer.children.length
+    listContainer.children.length > 0
+        ? ((card.hidden = false))
+        : ((card.hidden = true))
+}
