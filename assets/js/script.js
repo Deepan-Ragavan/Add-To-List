@@ -22,6 +22,8 @@ document.addEventListener('DOMContentLoaded', () => {
         let closeBtn = document.createElement("button")
         closeBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>'
         btnDiv.append(closeBtn)
+
+        closeBtn.addEventListener('click', removeTask)
     })
 
     refreshUI()
