@@ -91,7 +91,6 @@ inputEl.addEventListener('keypress', (event) => {
     }
 })
 
-//refresh ui
 function refreshUI() {
     badge.innerText = listContainer.children.length
     listContainer.children.length > 0
