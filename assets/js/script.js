@@ -1,99 +1,73 @@
-let card = document.getElementById("card")
-let inputEl = document.getElementById("textInput");
-let listContainer = document.getElementById("listOutput")
-let badge = document.getElementById("badge")
-card.hidden = true
+let input = document.getElementById("textInput");
+let listContainer = document.getElementById("listOutput");
+let addBtn = document.getElementById('addBtn');
+let tasks = JSON.parse(localStorage.getItem('all-tasks') || '[]');
 
-
-document.addEventListener('DOMContentLoaded', () => {
-    //fetch Local Storage
-    const taskStorage = [...JSON.parse(localStorage.getItem('tasks'))]
-
-    taskStorage.forEach(key => {
-
-        var list = document.createElement("div")
-        listContainer.appendChild(list)
-        let listItem = document.createElement("li")
-        list.append(listItem)
-        listItem.textContent = key.task
-
-        let btnDiv = document.createElement("div")
-        list.append(btnDiv)
-        let closeBtn = document.createElement("button")
-        closeBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>'
-        btnDiv.append(closeBtn)
-
-        closeBtn.addEventListener('click', removeTask)
-    })
-
-    refreshUI()
-})
-
-let addList = () => {
-
+let showTask = () => {
     let pattern = /^[\w]/g;
-    if (pattern.test(inputEl.value) != true) {
+    if (pattern.test(input.value) != true) {
         alert("Enter a valid name")
         return false
     }
-
-    let list = document.createElement("div")
-    listContainer.appendChild(list)
-    let listItem = document.createElement("li")
-    list.append(listItem)
-    listItem.textContent = inputEl.value
-
-    let btnDiv = document.createElement("div")
-    list.append(btnDiv)
-    let closeBtn = document.createElement("button")
-    closeBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>'
-    btnDiv.append(closeBtn)
-
-    // local storage
-
-    localStorage.setItem('tasks',
-        JSON.stringify([
-            ...JSON.parse(localStorage.getItem('tasks') || '[]'),
-            { task: inputEl.value }
-        ])
-    )
-
-    inputEl.value = ""
-
-
-    //Remove Item
-    closeBtn.addEventListener('click', removeTask)
-
-    refreshUI()
+    else {
+        createTasks(input.value);
+    }
 }
 
-function removeTask(e) {
-    let existingList = e.target.parentNode.parentNode.parentNode
-    existingList.remove()
+addBtn.addEventListener('click', () => {
+    showTask()
+})
 
-    let taskStorage = [...JSON.parse(localStorage.getItem('tasks'))]
-    taskStorage.forEach(key => {
-        if (key.task === existingList.innerText) {
-            taskStorage.splice(taskStorage.indexOf(key), 1)
-        }
-    })
-
-    localStorage.setItem('tasks', JSON.stringify(taskStorage))
-
-    refreshUI()
-}
-
-
-// keypress Event
-inputEl.addEventListener('keypress', (event) => {
+input.addEventListener('keypress', (event) => {
     if (event.key === 'Enter') {
-        addList()
+        showTask()
     }
 })
 
-function refreshUI() {
-    badge.innerText = listContainer.children.length
-    listContainer.children.length > 0
-        ? ((card.hidden = false))
-        : ((card.hidden = true))
+let createTasks = (userTasks) => {
+    let taskInfo = { task: userTasks, status: 'pending' };
+    tasks.push(taskInfo);
+    localStorage.setItem('all-tasks', JSON.stringify(tasks));
+    input.value = '';
+    addList()
 }
+
+let addList = () => {
+    let li = '';
+    tasks.forEach((todo, id) => {
+        let completed = todo.status == 'completed' ? 'checked' : '';
+        li += `<div>
+        <div class='task task-${id} d-flex'>
+        <input type="checkbox" name="" id="${id}" ${completed} onclick="taskComplete(this)" class='me-2'>
+        <li class=${completed}>${todo.task}</li>
+        </div>
+        <div class='btns'>
+            <button class='dlt-btn' onclick="deleteTask(${id})">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+    </div>`;
+    });
+
+    listContainer.innerHTML = li || `<img src='https://cdni.iconscout.com/illustration/premium/thumb/empty-state-concept-3428212-2902554.png' class='img-fluid'>
+        <p class='no-task-message'>No tasks here yet</p>`;
+}
+
+let taskComplete = (elem) => {
+    if (elem.checked) {
+        elem.nextElementSibling.classList.add('checked');
+        tasks[elem.id].status = 'completed';
+    } else {
+        elem.nextElementSibling.classList.remove('checked');
+        tasks[elem.id].status = 'pending';
+    }
+    localStorage.setItem("all-tasks", JSON.stringify(tasks));
+}
+
+let deleteTask = (deleteId) => {
+    tasks.splice(deleteId, 1);
+    localStorage.setItem("all-tasks", JSON.stringify(tasks));
+    addList();
+}
+
+addList();

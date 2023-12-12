@@ -1,3 +1,5 @@
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
 * {
     padding: 0;
     margin: 0;
@@ -6,7 +8,11 @@
 
 body {
     min-height: 100vh;
-    background-image: linear-gradient(120deg, #c07597, #4272a9, #0d344a);
+    background-color: #608c9f;
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 header {
@@ -21,30 +27,24 @@ header {
 
 
 .mainContainer {
-    margin: 100px auto;
-    background-color: #0e0d26;
+    margin: 25px;
+    background-color:  #091a1a;
     color: #fff;
-    width: max-content;
+    width: 100%;
+    max-width: 350px;
     padding: 20px;
     border-radius: 5px;
     box-shadow: 5px 5px 10px #00000079;
 }
 
-.mainContainer>button {
-    background-color: #345386;
-    padding: 10px 17px;
-    font-weight: 500;
-    border-radius: 5px;
-    border: none;
+.mainContainer .input-box button {
+    background-color: #d93b2b;
     color: #fff;
 }
 
 input {
-    padding: 10px;
-    outline: none;
-    border: none;
-    border-radius: 5px;
-    background-color: rgb(240, 240, 240);
+    padding: 10px !important;
+    background-color: rgb(240, 240, 240) !important;
 }
 
 .card {
@@ -70,4 +70,9 @@ input {
     background-color: rgb(240, 240, 240);
     text-transform: capitalize;
     color: rgb(101, 101, 101);
+}
+
+.checked{
+    text-decoration: line-through;
+    color: rgb(150, 150, 150);
 }

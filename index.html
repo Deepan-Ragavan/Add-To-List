@@ -17,24 +17,20 @@
 </head>
 
 <body>
-    <header>
-        <h4>To Do List</h4>
-    </header>
 
     <main class="mainContainer">
+        <div class="input-box d-flex">
+            <input type="text" class="form-control me-2" placeholder="Type Here!!" id="textInput">
+            <button class="btn" id="addBtn">Add</button>
+        </div>
 
-        <h1 class="text-center mb-4">Add Tasks</h1>
-
-        <input type="text" placeholder="Type Here!!" id="textInput">
-        <button id="addBtn" onclick="addList()">Add</button>
-
-        <div class="card" id="card">
-
-            <h5 class="text-center">Added Tasks<span class="badge text-bg-primary text-light mx-2" id="badge"></span>
-            </h5>
-
-            <div class="list-container" id="listOutput">
-            </div>
+        <div class="card list-container" id="listOutput">
+            
+        </div>
+        <div>
+            <p>
+                Added Tasks<span class="badge text-bg-primary text-light mx-2" id="badge"></span>
+            </p>
         </div>
 
     </main>
