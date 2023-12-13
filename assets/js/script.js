@@ -1,6 +1,10 @@
 let input = document.getElementById("textInput");
 let listContainer = document.getElementById("listOutput");
 let addBtn = document.getElementById('addBtn');
+let btnContainer = document.querySelector('.btn-container')
+let clearBtn = document.querySelector('.clear-btn')
+let completedClear = document.querySelector('completed-clear-btn')
+let countTxt = document.querySelector('.mainContainer .count-container')
 let tasks = JSON.parse(localStorage.getItem('all-tasks') || '[]');
 
 let showTask = () => {
@@ -51,6 +55,16 @@ let addList = () => {
 
     listContainer.innerHTML = li || `<img src='https://cdni.iconscout.com/illustration/premium/thumb/empty-state-concept-3428212-2902554.png' class='img-fluid'>
         <p class='no-task-message'>No tasks here yet</p>`;
+
+    countTasks()
+    if (tasks.length == 0) {
+        countTxt.style.display = 'none'
+        btnContainer.style.display = 'none'
+    }
+    else{
+        countTxt.style.display = 'block'
+        btnContainer.style.display = 'flex'
+    }
 }
 
 let taskComplete = (elem) => {
@@ -68,6 +82,32 @@ let deleteTask = (deleteId) => {
     tasks.splice(deleteId, 1);
     localStorage.setItem("all-tasks", JSON.stringify(tasks));
     addList();
+}
+
+clearBtn.addEventListener('click', () => {
+    tasks = []
+    localStorage.setItem('all-tasks', JSON.stringify(tasks))
+    addList()
+})
+
+let clearCompletedTasks = (elem) => {
+    for (let i = tasks.length - 1; i >= 0; i--) {
+        if (tasks[i].status === 'completed') {
+            tasks.splice(i, 1);
+        }
+    }
+    localStorage.setItem('all-tasks', JSON.stringify(tasks));
+    addList();
+}
+
+let countTasks = () => {
+    let noOfTasks = tasks.length
+    if (noOfTasks == 1) {
+        countTxt.innerHTML = `<p>You have <strong>${noOfTasks}</strong> task pending`
+    }
+    else {
+        countTxt.innerHTML = `<p>You have <strong>${noOfTasks}</strong> tasks pending`
+    }
 }
 
 addList();

@@ -15,17 +15,6 @@ body {
     justify-content: center;
 }
 
-header {
-    top: 0;
-    width: 100%;
-    padding: 10px;
-    text-align: center;
-    background-color: #ffffff37;
-    font-weight: bolder;
-    box-shadow: 5px 5px 10px #00000079;
-}
-
-
 .mainContainer {
     margin: 25px;
     background-color:  #091a1a;
@@ -37,14 +26,22 @@ header {
     box-shadow: 5px 5px 10px #00000079;
 }
 
-.mainContainer .input-box button {
-    background-color: #d93b2b;
+p{
+    margin: 0;
+}
+
+.btn-danger {
+    background-color: #d93b2b !important;
     color: #fff;
 }
 
 input {
     padding: 10px !important;
     background-color: rgb(240, 240, 240) !important;
+}
+
+.input-box{
+    margin-bottom: 10px;
 }
 
 .card {
@@ -75,4 +72,22 @@ input {
 .checked{
     text-decoration: line-through;
     color: rgb(150, 150, 150);
+}
+
+.btn-container{
+    display: flex;
+}
+
+@media only screen and (max-width: 365px) {
+    .reset-button{
+        font-size: small;
+        padding: 10px 5px;
+    }
+}
+
+@media only screen and (max-width: 385px) and (min-width: 365px) {
+    .reset-button{
+
+        padding: 10px 5px;
+    }
 }
