@@ -10,7 +10,7 @@ let tasks = JSON.parse(localStorage.getItem('all-tasks') || '[]');
 let showTask = () => {
     let pattern = /^[\w]/g;
     if (pattern.test(input.value) != true) {
-        alert("Enter a valid name")
+        alert("Enter a valid task")
         return false
     }
     else {
@@ -90,7 +90,7 @@ clearBtn.addEventListener('click', () => {
     addList()
 })
 
-let clearCompletedTasks = (elem) => {
+let clearCompletedTasks = () => {
     for (let i = tasks.length - 1; i >= 0; i--) {
         if (tasks[i].status === 'completed') {
             tasks.splice(i, 1);
@@ -103,10 +103,10 @@ let clearCompletedTasks = (elem) => {
 let countTasks = () => {
     let noOfTasks = tasks.length
     if (noOfTasks == 1) {
-        countTxt.innerHTML = `<p>You have <strong>${noOfTasks}</strong> task pending`
+        countTxt.innerHTML = `<p>You have <strong>${noOfTasks}</strong> pending task`
     }
     else {
-        countTxt.innerHTML = `<p>You have <strong>${noOfTasks}</strong> tasks pending`
+        countTxt.innerHTML = `<p>You have <strong>${noOfTasks}</strong> pending tasks`
     }
 }
 
