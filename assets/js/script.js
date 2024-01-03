@@ -57,7 +57,7 @@ let addList = () => {
     });
 
     listContainer.innerHTML = li || `<img src='https://cdni.iconscout.com/illustration/premium/thumb/empty-state-concept-3428212-2902554.png' class='img-fluid'>
-        <p class='no-task-message'>No tasks here yet</p>`;
+        <p class='no-task-message'>No tasks added yet</p>`;
 
     countTasks()
     if (tasks.length == 0) {
