@@ -29,7 +29,10 @@ input.addEventListener('keypress', (event) => {
 })
 
 let createTasks = (userTasks) => {
-    let taskInfo = { task: userTasks, status: 'pending' };
+    let taskInfo = {
+        task: userTasks,
+        status: 'pending'
+    }
     tasks.push(taskInfo);
     localStorage.setItem('all-tasks', JSON.stringify(tasks));
     input.value = '';
@@ -41,10 +44,10 @@ let addList = () => {
     tasks.forEach((todo, id) => {
         let completed = todo.status == 'completed' ? 'checked' : '';
         li += `<div>
-        <div class='task task-${id} d-flex'>
+        <label class='task task-${id} d-flex'>
         <input type="checkbox" name="" id="${id}" ${completed} onclick="taskComplete(this)" class='me-2'>
         <li class=${completed}>${todo.task}</li>
-        </div>
+        </label>
         <div class='btns'>
             <button class='dlt-btn' onclick="deleteTask(${id})">
                 <i class="fa-solid fa-xmark"></i>
@@ -61,7 +64,7 @@ let addList = () => {
         countTxt.style.display = 'none'
         btnContainer.style.display = 'none'
     }
-    else{
+    else {
         countTxt.style.display = 'block'
         btnContainer.style.display = 'flex'
     }
@@ -76,6 +79,7 @@ let taskComplete = (elem) => {
         tasks[elem.id].status = 'pending';
     }
     localStorage.setItem("all-tasks", JSON.stringify(tasks));
+    countTasks()
 }
 
 let deleteTask = (deleteId) => {
@@ -101,9 +105,12 @@ let clearCompletedTasks = () => {
 }
 
 let countTasks = () => {
-    let noOfTasks = tasks.length
+    let pendingTasks = tasks.filter(task => task.status == 'pending')
+    let noOfTasks = pendingTasks.length
     if (noOfTasks == 1) {
-        countTxt.innerHTML = `<p>You have <strong>${noOfTasks}</strong> pending task`
+        countTxt.innerHTML = `<p>You have <strong>${noOfTasks}</strong> pending task</p>`
+    } else if(noOfTasks == 0){
+        countTxt.innerHTML = `<p>No pending task</p>`
     }
     else {
         countTxt.innerHTML = `<p>You have <strong>${noOfTasks}</strong> pending tasks`
