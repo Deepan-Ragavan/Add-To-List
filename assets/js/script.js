@@ -1,3 +1,5 @@
+const API_URL = 'https://todo-backend-jz2g.onrender.com/todo'
+
 let input = document.getElementById("textInput");
 let listContainer = document.getElementById("listOutput");
 let addBtn = document.getElementById('addBtn');
@@ -5,7 +7,19 @@ let btnContainer = document.querySelector('.btn-container')
 let clearBtn = document.querySelector('.clear-btn')
 let completedClear = document.querySelector('completed-clear-btn')
 let countTxt = document.querySelector('.mainContainer .count-container')
-let tasks = JSON.parse(localStorage.getItem('all-tasks') || '[]');
+let tasks = [];
+
+const fetchTasks = async () => {
+    try {
+        let response = await fetch(API_URL);
+        tasks = await response.json();
+        addList();
+    } catch (error) {
+        console.error('Error fetching tasks:', error);
+    }
+}
+
+fetchTasks();
 
 let showTask = () => {
     let pattern = /^[\w]/g;
@@ -28,24 +42,32 @@ input.addEventListener('keypress', (event) => {
     }
 })
 
-let createTasks = (userTasks) => {
+let createTasks = async (userTasks) => {
     let taskInfo = {
         task: userTasks,
-        status: 'pending'
     }
-    tasks.push(taskInfo);
-    localStorage.setItem('all-tasks', JSON.stringify(tasks));
+    try {
+        const response = await fetch(API_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(taskInfo)
+        })
+        const newTask = await response.json()
+        tasks.push(newTask);
+    } catch (err) { }
     input.value = '';
-    addList()
+    addList();
 }
 
 let addList = () => {
     let li = '';
     tasks.forEach((todo, id) => {
-        let completed = todo.status == 'completed' ? 'checked' : '';
+        let completed = todo.completed ? 'checked' : '';
         li += `<div>
         <label class='task task-${id} d-flex'>
-        <input type="checkbox" name="" id="${id}" ${completed} onclick="taskComplete(this)" class='me-2'>
+        <input type="checkbox" name="" id="${todo._id}" ${completed} onclick="taskComplete(this)" class='me-2'>
         <li class=${completed}>${todo.task}</li>
         </label>
         <div class='btns'>
@@ -70,46 +92,84 @@ let addList = () => {
     }
 }
 
-let taskComplete = (elem) => {
-    if (elem.checked) {
-        elem.nextElementSibling.classList.add('checked');
-        tasks[elem.id].status = 'completed';
-    } else {
-        elem.nextElementSibling.classList.remove('checked');
-        tasks[elem.id].status = 'pending';
+let taskComplete = async (elem) => {
+    try {
+        let task = tasks.filter(task => task._id === elem.id);
+        task[0].completed ? task[0].completed = false : task[0].completed = true;
+        await fetch(`${API_URL}/${elem.id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ completed: task[0].completed })
+        })
+        addList();
+        countTasks();
+    } catch (err) {
+        console.log(err);
     }
-    localStorage.setItem("all-tasks", JSON.stringify(tasks));
-    countTasks()
 }
 
-let deleteTask = (deleteId) => {
-    tasks.splice(deleteId, 1);
-    localStorage.setItem("all-tasks", JSON.stringify(tasks));
-    addList();
+let deleteTask = async (id) => {
+    try {
+        const deleteId = tasks[id]._id
+        await fetch(`${API_URL}/${deleteId}`,
+            {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            }
+        )
+        fetchTasks();
+        addList();
+    } catch (err) {
+        console.log(err);
+    }
 }
 
-clearBtn.addEventListener('click', () => {
-    tasks = []
-    localStorage.setItem('all-tasks', JSON.stringify(tasks))
-    addList()
+clearBtn.addEventListener('click', async () => {
+    try {
+        for (const task of tasks) {
+            await fetch(`${API_URL}/${task._id}`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+        }
+        fetchTasks();
+        addList();
+    } catch (err) {
+        console.log(err);
+    }
 })
 
-let clearCompletedTasks = () => {
-    for (let i = tasks.length - 1; i >= 0; i--) {
-        if (tasks[i].status === 'completed') {
-            tasks.splice(i, 1);
+let clearCompletedTasks = async () => {
+    try {
+        for (const task of tasks) {
+            if (task.completed) {
+                await fetch(`${API_URL}/${task._id}`, {
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                });
+            }
+            fetchTasks();
+            addList();
         }
+    } catch (err) {
+        console.log(err);
     }
-    localStorage.setItem('all-tasks', JSON.stringify(tasks));
-    addList();
 }
 
 let countTasks = () => {
-    let pendingTasks = tasks.filter(task => task.status == 'pending')
+    let pendingTasks = tasks.filter(task => !task.completed)
     let noOfTasks = pendingTasks.length
     if (noOfTasks == 1) {
         countTxt.innerHTML = `<p>You have <strong>${noOfTasks}</strong> pending task</p>`
-    } else if(noOfTasks == 0){
+    } else if (noOfTasks == 0) {
         countTxt.innerHTML = `<p>No pending task</p>`
     }
     else {
